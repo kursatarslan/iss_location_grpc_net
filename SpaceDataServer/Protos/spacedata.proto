@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+option csharp_namespace = "SpaceDataServer.Protos";
+
+package space.data;
+
+service SpaceDataStreamer {
+  rpc GetSpaceData (SpaceDataRequest) returns (stream SpaceDataResponse);
+}
+
+message SpaceDataRequest {
+  string dataType = 1;
+  string connectionId = 2;
+}
+
+message SpaceDataResponse {
+  double value = 1;
+  string measurementTime = 2;
+  string dataType = 3;
+}
