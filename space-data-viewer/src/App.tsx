@@ -4,10 +4,9 @@ import { SpaceDataRequest, SpaceDataResponse } from './generated/spacedata_pb';
 import { Line } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
 import 'chartjs-adapter-date-fns';
-import { v4 as uuidv4 } from 'uuid'; // uuid paketini ekleyin
+import { v4 as uuidv4 } from 'uuid'; 
 
 
-// Register Chart.js components
 Chart.register(...registerables);
 
 interface DataPoint {
@@ -22,21 +21,14 @@ const App: React.FC = () => {
   const [velocityData, setVelocityData] = useState<DataPoint[]>([]);
   const [activeDataType, setActiveDataType] = useState<'altitude' | 'velocity'>('altitude');
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
-  // Sets the connection ID on the request object
-  // Type: (id: string) => void
-  // Context: request.setConnectionid(connectionId)
-  // Implementation is provided by the generated protobuf code, so no need to define it here.
+
   useEffect(() => {
-    // Create the gRPC client
     const client = new SpaceDataStreamerClient('http://localhost:5037');
     
-    // Create the request object
     const request = new SpaceDataRequest();
     const connectionId = uuidv4();
     request.setConnectionid(connectionId);
     request.setDatatype(activeDataType);
-
-    // Start the stream
     const stream = client.getSpaceData(request, {});
     
     stream.on('data', (response: SpaceDataResponse) => {
@@ -46,7 +38,6 @@ const App: React.FC = () => {
         y: response.getValue()
       };
       
-      // Update the appropriate dataset based on the response type
       if (response.getDatatype() === 'altitude') {
         setAltitudeData(prev => [...prev.slice(-(MAX_DATA_POINTS - 1)), newDataPoint]);
       } else {
